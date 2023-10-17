@@ -1,4 +1,4 @@
-Source: dde-file-manager-extensions
+Source: filemanager-plugin-demo
 Priority: optional
 Maintainer: Deepin Packages Builder <packages@linuxdeepin.com>
 Build-Depends: debhelper (>= 11),
@@ -7,11 +7,10 @@ Standards-Version: 4.1.3
 Section: libs
 Homepage: http://www.deepin.org
 
-Package: dfmplugin-disk-encrypt
+Package: filemanager-plugin-demo1
 Architecture: any
 Multi-Arch: same
 Depends:
  ${shlibs:Depends},
  ${misc:Depends}
-Description: A plugin for dde-file-manager to encrypt disks.
- A plugin for dde-file-manager to encrypt disks.
+Description: A plugin for dde-file-manager to use sidebar,view plugins' interface.

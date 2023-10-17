@@ -15,7 +15,7 @@ class DFMPLUGIN_DISK_ENCRYPT_EXPORT DiskEncryptEntry : public dpf::Plugin
 {
     Q_OBJECT
 
-    Q_PLUGIN_METADATA(IID "org.deepin.plugin.filemanager" FILE "diskencryptentry.json")
+    Q_PLUGIN_METADATA(IID "org.deepin.plugin.filemanager" FILE "filemanager-plugin-demo1.json")
 
     // Plugin interface
 public:

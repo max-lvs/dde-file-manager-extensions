@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(filemanager-plugins)
+project(filemanager-plugin-demo)
 set(CMAKE_CXX_STANDARD 17)
 
 set(CMAKE_AUTOMOC ON)
@@ -55,60 +55,6 @@ if(NOT DEFINED DFM_PLUGIN_DIR)
     set(DFM_PLUGIN_DIR ${LIB_INSTALL_DIR}/dde-file-manager/plugins)
 endif()
 
-# build plugins dir
-if(NOT DEFINED DFM_BUILD_PLUGIN_DIR)
-    set(DFM_BUILD_PLUGIN_DIR ${CMAKE_CURRENT_BINARY_DIR}/src/plugins)
-endif()
-
-# common-core plugins dir
-if(NOT DEFINED DFM_PLUGIN_COMMON_CORE_DIR)
-    set(DFM_PLUGIN_COMMON_CORE_DIR ${DFM_PLUGIN_DIR}/common-core)
-endif()
-
-# desktop-core plugins dir
-if(NOT DEFINED DFM_PLUGIN_DESKTOP_CORE_DIR)
-    set(DFM_PLUGIN_DESKTOP_CORE_DIR ${DFM_PLUGIN_DIR}/desktop-core)
-endif()
-
-# filemanager-core plugins dir
-if(NOT DEFINED DFM_PLUGIN_FILEMANAGER_CORE_DIR)
-    set(DFM_PLUGIN_FILEMANAGER_CORE_DIR ${DFM_PLUGIN_DIR}/filemanager-core)
-endif()
-
-# common-edge plugins dir
-if(NOT DEFINED DFM_PLUGIN_COMMON_EDGE_DIR)
-    set(DFM_PLUGIN_COMMON_EDGE_DIR ${DFM_PLUGIN_DIR}/common-edge)
-endif()
-
-# daemon-edge plugins dir
-if(NOT DEFINED DFM_PLUGIN_DAEMON_EDGE_DIR)
-    set(DFM_PLUGIN_DAEMON_EDGE_DIR ${DFM_PLUGIN_DIR}/daemon-edge)
-endif()
-
-# server-edge plugins dir
-if(NOT DEFINED DFM_PLUGIN_SERVER_EDGE_DIR)
-    set(DFM_PLUGIN_SERVER_EDGE_DIR ${DFM_PLUGIN_DIR}/server-edge)
-endif()
-
-# desktop-edge plugins dir
-if(NOT DEFINED DFM_PLUGIN_DESKTOP_EDGE_DIR)
-    set(DFM_PLUGIN_DESKTOP_EDGE_DIR ${DFM_PLUGIN_DIR}/desktop-edge)
-endif()
-
-# filemanager-edge plugins dir
-if(NOT DEFINED DFM_PLUGIN_FILEMANAGER_EDGE_DIR)
-    set(DFM_PLUGIN_FILEMANAGER_EDGE_DIR ${DFM_PLUGIN_DIR}/filemanager-edge)
-endif()
-
-# tools
-if(NOT DEFINED DFM_TOOLS_DIR)
-    set(DFM_TOOLS_DIR ${LIB_INSTALL_DIR}/dde-file-manager/tools)
-endif()
-
-# dde-file-thumbnail-tool
-if(NOT DEFINED DFM_THUMBNAIL_TOOL)
-    set(DFM_THUMBNAIL_TOOL ${LIB_INSTALL_DIR}/dde-file-manager/tools)
-endif()
 
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Release" CACHE STRING
@@ -118,28 +64,7 @@ endif(NOT CMAKE_BUILD_TYPE)
 
 message("Build type:"${CMAKE_BUILD_TYPE})
 
-#if (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
-#    set(BUILD_TESTING ON)
-#else()
-#    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Ofast")
-#    # generate qm
-#    execute_process(COMMAND bash "translate_generation.sh"
-#        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/src)
-#endif()
 
 # sub directories
 add_subdirectory(src)
 
-# docs
-# set(BUILD_DOCS ON CACHE BOOL "Generate doxygen-based documentation")
-# find_package(Doxygen)
-# if (BUILD_DOCS AND DOXYGEN_FOUND)
-#     add_subdirectory(docs)
-# endif ()
-
-# test
-# message(STATUS "Enable testing: ${BUILD_TESTING}")
-# if(BUILD_TESTING)
-#     enable_testing()
-#     add_subdirectory(tests)
-# endif()

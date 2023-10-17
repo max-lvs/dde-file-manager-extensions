@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
 
-project(dfmplugin_disk_encrypt LANGUAGES CXX)
+project(filemanager-plugin-demo1 LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOUIC ON)

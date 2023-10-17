@@ -1,1 +1,1 @@
-add_subdirectory(dfmplugin-disk-encrypt-entry)
+add_subdirectory(filemanager-plugin-demo1)
