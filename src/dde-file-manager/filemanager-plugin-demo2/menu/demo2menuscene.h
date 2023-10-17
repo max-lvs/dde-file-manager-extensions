@@ -2,21 +2,19 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#ifndef DISKENCRYPTMENUSCENE_H
-#define DISKENCRYPTMENUSCENE_H
+#ifndef DEMO2MENUSCENE_H
+#define DEMO2MENUSCENE_H
 
 #include <dfm-base/interfaces/abstractmenuscene.h>
 #include <dfm-base/interfaces/abstractscenecreator.h>
-
-#include "gui/encryptparamsinputdialog.h"
 
 #include <QUrl>
 
 class QAction;
 
-namespace dfmplugin_diskenc {
+namespace dfmplugin_demo2 {
 
-class DiskEncryptMenuCreator : public dfmbase::AbstractSceneCreator
+class Demo2MenuCreator : public dfmbase::AbstractSceneCreator
 {
     Q_OBJECT
     // AbstractSceneCreator interface
@@ -24,15 +22,15 @@ public:
     virtual dfmbase::AbstractMenuScene *create() override;
     static inline QString name()
     {
-        return "DiskEncryptMenu";
+        return "demo2-menu";
     }
 };
 
-class DiskEncryptMenuScene : public dfmbase::AbstractMenuScene
+class Demo2MenuScene : public dfmbase::AbstractMenuScene
 {
     Q_OBJECT
 public:
-    explicit DiskEncryptMenuScene(QObject *parent = nullptr);
+    explicit Demo2MenuScene(QObject *parent = nullptr);
 
     // AbstractMenuScene interface
 public:
@@ -50,4 +48,4 @@ private:
 
 }
 
-#endif   // DISKENCRYPTMENUSCENE_H
+#endif   // DEMO2MENUSCENE_H

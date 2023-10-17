@@ -2,16 +2,16 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#ifndef DISKENCRYPTENTRY_H
-#define DISKENCRYPTENTRY_H
+#ifndef PluginDemo1_H
+#define PluginDemo1_H
 
-#include "dfmplugin_disk_encrypt_global.h"
+#include "dfmplugin_demo1_global.h"
 
 #include <dfm-framework/dpf.h>
 
-namespace dfmplugin_diskenc {
+namespace dfmplugin_demo1 {
 
-class DFMPLUGIN_DISK_ENCRYPT_EXPORT DiskEncryptEntry : public dpf::Plugin
+class DFMPLUGIN_DEMO1_EXPORT PluginDemo1 : public dpf::Plugin
 {
     Q_OBJECT
 
@@ -23,8 +23,8 @@ public:
     virtual bool start() override;
 
 private:
-    void onComputerMenuSceneAdded(const QString &scene);
+    void loadTranslator();
 };
 }
 
-#endif   // DISKENCRYPTENTRY_H
+#endif   // PluginDemo1_H
