@@ -7,6 +7,10 @@
 #include <dfm-base/dfm_menu_defines.h>
 #include <dfm-base/base/schemefactory.h>
 #include <dfm-base/interfaces/fileinfo.h>
+#include <dfm-framework/event/event.h>
+
+#include "dfm-base/base/schemefactory.h"
+#include "dfm-base/dfm_event_defines.h"
 
 #include <DDialog>
 #include <QDebug>
@@ -47,19 +51,27 @@ QString Demo2MenuScene::name() const
 bool Demo2MenuScene::initialize(const QVariantHash &params)
 {
     qDebug() << "===============Demo2MenuScene::initialize:" << params;
-    return true;
 
     QList<QUrl> selectedItems = params.value(MenuParamKey::kSelectFiles).value<QList<QUrl>>();
-    if (selectedItems.isEmpty())
-        return false;
 
-    selectedItem = selectedItems.first();
-    if (!selectedItem.path().endsWith("your path or other thing"))
-        return false;
+    QList<AbstractMenuScene *> currentScene;
 
-    QSharedPointer<FileInfo> info = InfoFactory::create<FileInfo>(selectedItem);
-    if (!info)
-        return false;
+    const QVariant &scene = dpfSlotChannel->push("dfmplugin_menu", "slot_MenuScene_CreateScene", QString("WorkspaceMenu"));
+    auto fileWorkScene = scene.value<DFMBASE_NAMESPACE::AbstractMenuScene *>();
+
+    qDebug() << "========" << scene.isValid() << scene << fileWorkScene;
+
+    if (fileWorkScene) {
+        qDebug() << "===============fileWorkScene::initialize:" << params;
+        currentScene.append(fileWorkScene);
+    }
+
+    // the scene added by binding must be initializeed after 'defalut scene'.
+    currentScene.append(subScene);
+    setSubscene(currentScene);
+
+    // 初始化所有子场景
+    bool ret = AbstractMenuScene::initialize(params);
 
     return true;
 }
@@ -68,13 +80,18 @@ bool Demo2MenuScene::create(QMenu *parent)
 {
     qDebug() << "===============Demo2MenuScene::create" ;
     Q_ASSERT(parent);
-    actEncrypt = parent->addAction("plugin-demo1-menu");
+
+    // 创建子场景菜单
+    AbstractMenuScene::create(parent);
+
+    actEncrypt = parent->addAction("plugin-demo2-menu");
     return true;
 }
 
 bool Demo2MenuScene::triggered(QAction *action)
 {
-    qDebug() << "===============Demo2MenuScene::create" << action->text() ;
+    qDebug() << "===============Demo2MenuScene::triggered" << action->text() ;
+
     if (action == actEncrypt) {
         showPopDialog();
         return true;
@@ -84,8 +101,11 @@ bool Demo2MenuScene::triggered(QAction *action)
 
 void Demo2MenuScene::updateState(QMenu *parent)
 {
-    qDebug() << "===============Demo2MenuScene::create" << parent->title() ;
+    qDebug() << "===============Demo2MenuScene::updateState" << parent->title() ;
     Q_ASSERT(parent);
+
+    AbstractMenuScene::updateState(parent);
+
     QList<QAction *> acts = parent->actions();
     for (auto act : acts) {
         if (act == actEncrypt) {

@@ -18,16 +18,15 @@ DWIDGET_USE_NAMESPACE
 
 void PluginDemo2::initialize()
 {
-    qDebug() << "===============init the demo1 plugin";
+    qDebug() << "===============init the demo2 plugin";
     loadTranslator();
     Demo2Manager::instance()->infoRegister();
-    Demo2Manager::instance()->menuRegister();
-    qDebug() << "===============done to init the demo1 plugin";
+    qDebug() << "===============done to init the demo2 plugin";
 }
 
 bool PluginDemo2::start()
 {
-    Demo2Manager::instance()->viewRegister();
+    Demo2Manager::instance()->initConection();
     return true;
 }
 

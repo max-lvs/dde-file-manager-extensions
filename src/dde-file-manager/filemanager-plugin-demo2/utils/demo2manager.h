@@ -37,7 +37,7 @@ public:
 
     void viewRegister();
 
-    bool menuRegister();
+    void initConection();
 
     static void sidebarContenxtMenuHandle(quint64 windowId, const QUrl &url, const QPoint &globalPos);
 
@@ -50,10 +50,11 @@ public slots:
 
     void titleBarRegister();
 
-    bool handleSepateTitlebarCrumb(const QUrl &url, QList<QVariantMap> *mapGroup);
+    void addComputer();
 
-private:
-    void onSceneMenuSceneAdded(const QString &scene);
+    void computerOpenItem(quint64 winId, const QUrl &url);
+
+    bool handleSepateTitlebarCrumb(const QUrl &url, QList<QVariantMap> *mapGroup);
 
 private:
     explicit Demo2Manager(QObject *parent = nullptr);

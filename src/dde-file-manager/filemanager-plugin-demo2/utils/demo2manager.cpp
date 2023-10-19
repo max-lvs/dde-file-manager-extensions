@@ -4,7 +4,10 @@
 
 #include "demo2manager.h"
 #include "menu/demo2menuscene.h"
-#include "view/Demo2View.h"
+#include "files/demo2entryfileentity.h"
+#include "files/demo2fileinfo.h"
+#include "files/demo2fileiterator.h"
+#include "files/demo2filewatcher.h"
 
 #include <dfm-framework/event/event.h>
 
@@ -28,16 +31,26 @@ Demo2Manager *Demo2Manager::instance()
     return &instance;
 }
 
+static constexpr char kMenuPluginName[] { "dfmplugin_menu" };
+static constexpr char kMenuSceneName[] { "demo2_sence_menu" };
+
 void Demo2Manager::infoRegister()
 {
     UrlRoute::regScheme(Demo2Manager::scheme(), "/", Demo2Manager::icon(), true, tr("Plugin-demo2"));
-    bindWindows();
-}
 
-void Demo2Manager::viewRegister()
-{
-    ViewFactory::regClass<Demo2View>(Demo2Manager::scheme());
-    connect(&FMWindowsIns, &FileManagerWindowsManager::windowOpened, this, &Demo2Manager::onWindowOpened, Qt::DirectConnection);
+    //注册Scheme为"Plugin-demo2"的扩展的文件信息,用于特殊业务
+//    InfoFactory::regClass<Demo2FileInfo>(Demo2Manager::scheme());
+//    WatcherFactory::regClass<Demo2FileWatcher>(Demo2Manager::scheme(), WatcherFactory::kNoCache);
+//    DirIteratorFactory::regClass<Demo2FileIterator>(Demo2Manager::scheme());
+    EntryEntityFactor::registCreator<Demo2EntryFileEntity>("demo2"); // suffix
+//    infoRegisterState = true;
+
+    dpfSignalDispatcher->subscribe("dfmplugin_computer", "signal_Operation_OpenItem", this, &Demo2Manager::computerOpenItem);
+
+    dpfSignalDispatcher->subscribe("dfmplugin_computer", "signal_View_Refreshed",
+                                   this, &Demo2Manager::addComputer);
+
+    bindWindows();
 }
 
 void Demo2Manager::bindWindows()
@@ -47,6 +60,19 @@ void Demo2Manager::bindWindows()
         onWindowOpened(id);
     });
     connect(&FMWindowsIns, &FileManagerWindowsManager::windowOpened, this, &Demo2Manager::onWindowOpened, Qt::DirectConnection);
+}
+
+
+void Demo2Manager::initConection()
+{
+
+    dpfSlotChannel->push("dfmplugin_workspace", "slot_RegisterFileView", Demo2Manager::scheme());
+
+    dpfSlotChannel->push("dfmplugin_workspace", "slot_RegisterFileView", scheme());
+    dpfSlotChannel->push("dfmplugin_workspace", "slot_RegisterMenuScene", scheme(), Demo2MenuCreator::name());
+
+
+    dpfSlotChannel->push(kMenuPluginName, "slot_MenuScene_RegisterScene", Demo2MenuCreator::name(), new Demo2MenuCreator);
 }
 
 void Demo2Manager::onWindowOpened(quint64 winID)
@@ -62,6 +88,11 @@ void Demo2Manager::onWindowOpened(quint64 winID)
         sideBarRegister();
     else
         connect(window, &FileManagerWindow::sideBarInstallFinished, this, &Demo2Manager::sideBarRegister, Qt::DirectConnection);
+
+    if (window->workSpace())
+        addComputer();
+    else
+        connect(window, &FileManagerWindow::workspaceInstallFinished, this, &Demo2Manager::addComputer, Qt::DirectConnection);
 }
 
 void Demo2Manager::sideBarRegister()
@@ -70,13 +101,18 @@ void Demo2Manager::sideBarRegister()
     Qt::ItemFlags flags { Qt::ItemIsEnabled | Qt::ItemIsSelectable };
     QVariantMap map {
         { "Property_Key_Group", "Group_Network" },
-        { "Property_Key_DisplayName", tr("Plugin demo1") },
+        { "Property_Key_DisplayName", tr("Plugin demo2") },
         { "Property_Key_Icon", Demo2Manager::icon() },
         { "Property_Key_QtItemFlags", QVariant::fromValue(flags) },
         { "Property_Key_CallbackContextMenu", QVariant::fromValue(contextMenuCb) }
     };
 
     dpfSlotChannel->push("dfmplugin_sidebar", "slot_Item_Insert", 1, Demo2Manager::rootUrl(), map);
+}
+
+void Demo2Manager::addComputer()
+{
+     dpfSlotChannel->push("dfmplugin_computer", "slot_Item_Add", tr("Your dev label"), QUrl("entry:///demodev.demo2"), 0, false); // entry:/// 计算机界面标识，demodev:设备名,“虚拟设备名，不能为空，任意的”,demo2: suffix,用于标识自定义 Demo2EntryFileEntity, item标识
 }
 
 void Demo2Manager::titleBarRegister()
@@ -89,38 +125,12 @@ void Demo2Manager::titleBarRegister()
     dpfHookSequence->follow("dfmplugin_titlebar", "hook_Crumb_Seprate", Demo2Manager::instance(), &Demo2Manager::handleSepateTitlebarCrumb);
 }
 
-static constexpr char kBindMenuName[] { "FileOperatorMenu" };
-static constexpr char kMenuPluginName[] { "dfmplugin_menu" };
-static constexpr char kMenuSceneName[] { "demo1_sence_menu" };
 
-bool hasSceneMenuRegisted()
+void Demo2Manager::computerOpenItem(quint64 winId, const QUrl &url)
 {
-    return dpfSlotChannel->push(kMenuPluginName, "slot_MenuScene_Contains", kMenuSceneName).toBool();
-}
-
-bool Demo2Manager::menuRegister()
-{
-    qDebug() << "===============Demo1Manager::menuRegister";
-    dpfSlotChannel->push(kMenuPluginName, "slot_MenuScene_RegisterScene", Demo2MenuCreator::name(), new Demo2MenuCreator);
-
-    dpfSlotChannel->push("dfmplugin_workspace", "slot_RegisterFileView", scheme());
-    dpfSlotChannel->push("dfmplugin_workspace", "slot_RegisterMenuScene", scheme(), Demo2MenuCreator::name());
-
-
-//    if (hasSceneMenuRegisted()) {
-//        dpfSlotChannel->push(kMenuPluginName, "slot_MenuScene_Bind", Demo1MenuCreator::name(), kBindMenuName);
-//    } else {
-//        dpfSignalDispatcher->subscribe(kMenuPluginName, "signal_MenuScene_SceneAdded", this, &Demo1Manager::onSceneMenuSceneAdded);
-//    }
-
-    return true;
-}
-
-void Demo2Manager::onSceneMenuSceneAdded(const QString &scene)
-{
-    if (scene == kMenuSceneName) {
-        dpfSlotChannel->push(kMenuPluginName, "slot_MenuScene_Bind", Demo2MenuCreator::name(), kMenuSceneName);
-        dpfSignalDispatcher->unsubscribe(kMenuPluginName, "signal_MenuScene_SceneAdded", this, &Demo2Manager::onSceneMenuSceneAdded);
+    if (url.path().contains(scheme())) {
+        // your business and open the window
+        dpfSignalDispatcher->publish(GlobalEventType::kChangeCurrentUrl, winId, url);
     }
 }
 

@@ -1,5 +1,5 @@
 {
-    "Name" : "dfmplugin-plugin-demo1",
+    "Name" : "dfmplugin-plugin-demo2",
     "Version" : "1.0.0",
     "CompatVersion" : "1.0.0",
     "Vendor" : "The Uniontech Software Technology Co., Ltd.",
@@ -7,11 +7,13 @@
     "License" : [
     ],
     "Category" : "",
-    "Description" : "The demo1 plugin for the filemanager.",
+    "Description" : "The demo2 plugin for the filemanager.",
     "UrlLink" : "https://www.uniontech.com",
     "Depends" : [
+    "dfmplugin_menu",
     "dfmplugin-sidebar",
     "dfmplugin-titlebar",
-    "dfmplugin-workspace"
+    "dfmplugin-workspace",
+    "dfmplugin-computer"
     ]
 }
