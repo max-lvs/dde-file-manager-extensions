@@ -96,7 +96,7 @@ bool Demo2MenuScene::triggered(QAction *action)
         showPopDialog();
         return true;
     }
-    return false;
+    return AbstractMenuScene::triggered(action);
 }
 
 void Demo2MenuScene::updateState(QMenu *parent)

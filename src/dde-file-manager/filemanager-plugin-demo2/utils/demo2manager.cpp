@@ -38,11 +38,11 @@ void Demo2Manager::infoRegister()
 {
     UrlRoute::regScheme(Demo2Manager::scheme(), "/", Demo2Manager::icon(), true, tr("Plugin-demo2"));
 
-    //注册Scheme为"Plugin-demo2"的扩展的文件信息,用于特殊业务
+    //注册本插件的Scheme，自己的特殊业务，需要自行编写files里面的Demo2FileInfo、Demo2FileWatcher、Demo2FileIterator，并进行注册。demo2只演示了适配文管file的业务，file相关的fileinfo已经适配，因此不需要自己写
 //    InfoFactory::regClass<Demo2FileInfo>(Demo2Manager::scheme());
 //    WatcherFactory::regClass<Demo2FileWatcher>(Demo2Manager::scheme(), WatcherFactory::kNoCache);
 //    DirIteratorFactory::regClass<Demo2FileIterator>(Demo2Manager::scheme());
-    EntryEntityFactor::registCreator<Demo2EntryFileEntity>("demo2"); // suffix
+    EntryEntityFactor::registCreator<Demo2EntryFileEntity>("demo2"); //  注册计算机业务的entryfile，demo2 是suffix，用于标识当前Demo2EntryFileEntity
 //    infoRegisterState = true;
 
     dpfSignalDispatcher->subscribe("dfmplugin_computer", "signal_Operation_OpenItem", this, &Demo2Manager::computerOpenItem);
@@ -112,7 +112,8 @@ void Demo2Manager::sideBarRegister()
 
 void Demo2Manager::addComputer()
 {
-     dpfSlotChannel->push("dfmplugin_computer", "slot_Item_Add", tr("Your dev label"), QUrl("entry:///demodev.demo2"), 0, false); // entry:/// 计算机界面标识，demodev:设备名,“虚拟设备名，不能为空，任意的”,demo2: suffix,用于标识自定义 Demo2EntryFileEntity, item标识
+    // entry:/// 计算机界面标识，demodev:设备名,“虚拟设备名，不能为空，任意的”,demo2: suffix,用于标识自定义 Demo2EntryFileEntity, item标识
+     dpfSlotChannel->push("dfmplugin_computer", "slot_Item_Add", tr("Your dev label"), QUrl("entry:///demodev.demo2"), 0, false);
 }
 
 void Demo2Manager::titleBarRegister()

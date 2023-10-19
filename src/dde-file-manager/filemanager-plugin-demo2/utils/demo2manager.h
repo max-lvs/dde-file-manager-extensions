@@ -18,7 +18,7 @@ class Demo2Manager : public QObject
 public:
     inline static QString scheme()
     {
-        return "plugindemo2";
+        return "file"; // 如果自己设计挂载、文件抽取业务需要 重写files 里面的 fileinfo、fileiterator、filewatcher业务进行适配,且这里的scheme 可以自己定义
     }
     inline static QIcon icon()
     {
@@ -28,7 +28,7 @@ public:
     {
         QUrl u;
         u.setScheme(scheme());
-        u.setPath("/");
+        u.setPath("/tmp");
         return u;
     }
     static Demo2Manager *instance();
