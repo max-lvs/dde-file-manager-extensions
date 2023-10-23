@@ -31,25 +31,27 @@ Demo2Manager *Demo2Manager::instance()
     return &instance;
 }
 
-static constexpr char kMenuPluginName[] { "dfmplugin_menu" };
 static constexpr char kMenuSceneName[] { "demo2_sence_menu" };
 
 void Demo2Manager::infoRegister()
 {
+    // 注册本插件的scheme
     UrlRoute::regScheme(Demo2Manager::scheme(), "/", Demo2Manager::icon(), true, tr("Plugin-demo2"));
 
-    //注册本插件的Scheme，自己的特殊业务，需要自行编写files里面的Demo2FileInfo、Demo2FileWatcher、Demo2FileIterator，并进行注册。demo2只演示了适配文管file的业务，file相关的fileinfo已经适配，因此不需要自己写
+    //注册本插件的fileinfo信息。特殊业务，需要自行编写files里面的Demo2FileInfo、Demo2FileWatcher、Demo2FileIterator，并进行注册。demo2只演示了适配文管file的业务，file相关的fileinfo已经适配，因此不需要自己写
 //    InfoFactory::regClass<Demo2FileInfo>(Demo2Manager::scheme());
 //    WatcherFactory::regClass<Demo2FileWatcher>(Demo2Manager::scheme(), WatcherFactory::kNoCache);
 //    DirIteratorFactory::regClass<Demo2FileIterator>(Demo2Manager::scheme());
-    EntryEntityFactor::registCreator<Demo2EntryFileEntity>("demo2"); //  注册计算机业务的entryfile，demo2 是suffix，用于标识当前Demo2EntryFileEntity
-//    infoRegisterState = true;
+
+    // 订阅计算机页面事件
+    EntryEntityFactor::registCreator<Demo2EntryFileEntity>("demo2"); //  订阅计算机业务的entryfile，demo2 是suffix，用于标识当前Demo2EntryFileEntity
 
     dpfSignalDispatcher->subscribe("dfmplugin_computer", "signal_Operation_OpenItem", this, &Demo2Manager::computerOpenItem);
 
     dpfSignalDispatcher->subscribe("dfmplugin_computer", "signal_View_Refreshed",
                                    this, &Demo2Manager::addComputer);
 
+    // bind workspace 窗口信息
     bindWindows();
 }
 
@@ -65,14 +67,13 @@ void Demo2Manager::bindWindows()
 
 void Demo2Manager::initConection()
 {
-
+    // 发布工作区本插件scheme、鼠标右键场景信息,方便工作区文件信息、鼠标右键识别
     dpfSlotChannel->push("dfmplugin_workspace", "slot_RegisterFileView", Demo2Manager::scheme());
-
-    dpfSlotChannel->push("dfmplugin_workspace", "slot_RegisterFileView", scheme());
     dpfSlotChannel->push("dfmplugin_workspace", "slot_RegisterMenuScene", scheme(), Demo2MenuCreator::name());
 
 
-    dpfSlotChannel->push(kMenuPluginName, "slot_MenuScene_RegisterScene", Demo2MenuCreator::name(), new Demo2MenuCreator);
+    // 发布向右键注入本插件鼠标信息
+    dpfSlotChannel->push("dfmplugin_menu", "slot_MenuScene_RegisterScene", Demo2MenuCreator::name(), new Demo2MenuCreator);
 }
 
 void Demo2Manager::onWindowOpened(quint64 winID)

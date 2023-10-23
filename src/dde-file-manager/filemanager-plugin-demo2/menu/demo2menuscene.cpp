@@ -50,16 +50,12 @@ QString Demo2MenuScene::name() const
 
 bool Demo2MenuScene::initialize(const QVariantHash &params)
 {
-    qDebug() << "===============Demo2MenuScene::initialize:" << params;
-
     QList<QUrl> selectedItems = params.value(MenuParamKey::kSelectFiles).value<QList<QUrl>>();
 
     QList<AbstractMenuScene *> currentScene;
 
     const QVariant &scene = dpfSlotChannel->push("dfmplugin_menu", "slot_MenuScene_CreateScene", QString("WorkspaceMenu"));
     auto fileWorkScene = scene.value<DFMBASE_NAMESPACE::AbstractMenuScene *>();
-
-    qDebug() << "========" << scene.isValid() << scene << fileWorkScene;
 
     if (fileWorkScene) {
         qDebug() << "===============fileWorkScene::initialize:" << params;
@@ -71,9 +67,7 @@ bool Demo2MenuScene::initialize(const QVariantHash &params)
     setSubscene(currentScene);
 
     // 初始化所有子场景
-    bool ret = AbstractMenuScene::initialize(params);
-
-    return true;
+    return  AbstractMenuScene::initialize(params);
 }
 
 bool Demo2MenuScene::create(QMenu *parent)
