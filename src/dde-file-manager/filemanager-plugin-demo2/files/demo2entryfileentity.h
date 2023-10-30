@@ -26,7 +26,7 @@ public:
     virtual bool showProgress() const override;
     virtual bool showTotalSize() const override;
     virtual bool showUsageSize() const override;
-    virtual int order() const override;
+    virtual EntryOrder order() const override;
 
     virtual void refresh() override;
     virtual quint64 sizeTotal() const override;

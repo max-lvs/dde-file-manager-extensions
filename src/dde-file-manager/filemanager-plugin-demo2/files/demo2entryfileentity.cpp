@@ -52,11 +52,11 @@ bool Demo2EntryFileEntity::showUsageSize() const
     return false;
 }
 
-int Demo2EntryFileEntity::order() const
+AbstractEntryFileEntity::EntryOrder Demo2EntryFileEntity::order() const
 {
 //    EntryFileInfo::EntryOrder order = EntryFileInfo::EntryOrder(static_cast<int>(EntryFileInfo::EntryOrder::kOrderCustom) + 1);
 //    return order;
-    return 10;
+    return AbstractEntryFileEntity::kOrderApps;
 }
 
 void Demo2EntryFileEntity::refresh()
